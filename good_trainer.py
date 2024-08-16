@@ -1,3 +1,8 @@
+import os
+
+# Install the required packages
+os.system('pip install pyTelegramBotAPI googletrans==4.0.0-rc1 selenium beautifulsoup4 requests')
+
 import telebot
 from googletrans import Translator, LANGUAGES
 from selenium import webdriver
