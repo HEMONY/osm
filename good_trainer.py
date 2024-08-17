@@ -54,7 +54,7 @@ def check_subscription(user_id):
         member_status = bot.get_chat_member(CHANNEL_USERNAME, user_id).status
         return member_status in ['member', 'administrator', 'creator']
     except Exception as e:
-        print(f"Error checking subscription: {e}")
+        print(f"Error checking subscription...")
         return False
 
 #  إرسال رسالة الاشتراك الإجباري
@@ -403,8 +403,9 @@ def data_analysis():
         another_team = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[1]/div/div/div[2]/div[1]').text
         trainer = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[1]/div/div/div[2]/div[2]').text
         camp = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[7]/div/div[1]/div/div/span/span').text
-        match_plan = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[4]/div/div[1]/div/div/span/span').text
+        match_plan = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[3]/div/div[1]/div/div/span/span').text
         pass_cut = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[6]/div/div[1]/div/div/span/span').text
+        controlar  = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[4]/div/div[1]/div/div/span/span')
         of_side_catcher = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[5]/div/div[1]/div/div/span/span').text
         arina = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[8]/div/div[1]/div/div/span').text
         driver.find_element(By.XPATH, '//*[@id="spy-col-header"]/ul/li[2]/a').click()
@@ -417,20 +418,20 @@ def data_analysis():
         midfielders = driver.find_element(By.XPATH, '//*[@id="carousel-tacticlinemid"]/div[2]/div/div/div[1]/h3').text
         defenders = driver.find_element(By.XPATH, '//*[@id="carousel-tacticlinedef"]/div[2]/div/div/div[1]/h3').text
         pressing = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[1]/div/div/div/div[2]/div[2]/h5').text
-        pressing_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div[2]/input').text
+        pressing_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div[2]/input').get_attribute('value')
         style = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[2]/div/div/div/div[2]/div[2]/h5').text
-        style_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[2]/input').text
+        style_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[2]/input').get_attribute('value')
         tempo = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[3]/div/div/div/div[2]/div[2]/h5').text
-        tempo_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[3]/div/div/div/div[2]/div[3]/div/div[2]/input').text
+        tempo_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[3]/div/div/div/div[2]/div[3]/div/div[2]/input').get_attribute('value')
 
         
-        result = f'الفريق الخصم: {another_team}\n\nمعسكر تدريب: {camp}\n\nالمدرب: {trainer}\n\nالتشكيلة: {tashkila}\n\nخطة اللعب: {match_plan}\n\nقطع الكرة: {pass_cut}\n\nمصيدة التسلل: {of_side_catcher}\n\nارض الملعب: {arina}\n\nالهجوم: {forwards}\n\nالوسط: {midfielders}\n\nالدفاع: {defenders}\n\nالضغط على الخصم: {pressing}({pressing_dig})\n\nالاسلوب: {style}({style_dig})\n\nايقاع اللعب: {tempo}({tempo_dig})'
+        result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: () {pressing}({pressing_dig})\n❏ الاسلوب: () {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
     except Exception as e :
         try:
             opn = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div/div[3]/button')
             if opn:
                 opn.click()
-                result = f'الفريق الخصم: {another_team}\n\nمعسكر تدريب: {camp}\n\nالمدرب: {trainer}\n\nالتشكيلة: {tashkila}\n\nخطة اللعب: {match_plan}\n\nقطع الكرة: {pass_cut}\n\nمصيدة التسلل: {of_side_catcher}\n\nارض الملعب: {arina}\n\nالهجوم: {forwards}\n\nالوسط: {midfielders}\n\nالدفاع: {defenders}\n\nالضغط على الخصم: {pressing}({pressing_dig})\n\nالاسلوب: {style}({style_dig})\n\nايقاع اللعب: {tempo}({tempo_dig})'
+                result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: () {pressing}({pressing_dig})\n❏ الاسلوب: () {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
     
         except:
             pass
