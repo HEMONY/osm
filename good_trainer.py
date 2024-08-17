@@ -1,8 +1,3 @@
-import os
-
-# Install the required packages
-os.system('pip install pyTelegramBotAPI googletrans==4.0.0-rc1 selenium beautifulsoup4 requests')
-
 import telebot
 from googletrans import Translator, LANGUAGES
 from selenium import webdriver
@@ -38,7 +33,14 @@ languages = {
     'en': 'English',
     'tr': 'Tukish'
 }
-
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("--window-size=1920, 1080")
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-notifications")
+chrome_options.add_argument("--disable-advertisement")
+chrome_options.add_argument("--disable-popup-blocking")
+    
+driver = webdriver.Chrome(options=chrome_options)
 # ... التحقق من الاشتراك في القناة
 def check_subscription(user_id):
     try:
@@ -205,11 +207,21 @@ def show_main_menu(chat_id):
             m = driver.find_element(By.XPATH, matchday[i])
             c = driver.find_element(By.XPATH, club[i])
             l = driver.find_element(By.XPATH, league[i])
-            matchday_lst.append(m.text)
-            club_lst.append(c.text)
-            league_lst.append(l.text)
+            if not (m and c and l):
+                matchday_lst.append('?')
+                club_lst.append('?')
+                league_lst.append('___')
+
+
+            else:
+                matchday_lst.append(m.text)
+                club_lst.append(c.text)
+                league_lst.append(l.text)
         except Exception as e:
             print(f"Error occurred at index {i}: {str(e)}")
+            matchday_lst.append('?')
+            club_lst.append('?')
+            league_lst.append('___')
             pass
 
     # طباعة القيم المستخرجة
@@ -245,9 +257,10 @@ def show_main_menu(chat_id):
 
     btn5 = types.KeyboardButton('النتائج')
     btn6 = types.KeyboardButton('الجولة القادمة')
-
+    btn7 = types.KeyboardButton('تسجيل خروج')
+    btn8 = types.KeyboardButton('رجوع')
     # Adding buttons to markup
-    markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
+    markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8)
 
     # Sending the message with options
     bot.send_message(chat_id, "اختر أحد الخيارات:", reply_markup=markup)
@@ -261,6 +274,7 @@ def show_main_menu(chat_id):
                 element = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div[1]/div/div[1]/div/div[2]/div')
                 element.click()
                 time.sleep(2)
+                
                 bot.send_message(message.chat.id, data_analysis())
 
             elif message.text == button2:
@@ -295,10 +309,19 @@ def show_main_menu(chat_id):
                 table_data = extract_fixtures_data()
                 bot.send_message(message.chat.id, table_data)
 
+            elif message.text == 'تسجيل خروج':
+                osm_logout()
+                time.sleep(2)
+                bot.send_message(chat_id, 'تم تسجيل الخروج')
+            elif message.text == 'رجوع':
+                driver.get('https://ar.onlinesoccermanager.com/Career?nextUrl=/Login')
+                time.sleep(2)
+                bot.send_message(chat_id, 'تمت العودة للقائمة الرئيسية اختر احد الخانات')
+                
             else:
                 bot.send_message(message.chat.id, "يرجى اختيار خيار صحيح من القائمة.")
         except Exception as e:
-            bot.send_message(message.chat.id, f"حدث خطأ: {str(e)}")
+            bot.send_message(message.chat.id, f"حدث خطأ: ")
 
 def get_results():
     driver.get('https://ar.onlinesoccermanager.com/League/Results')
@@ -322,7 +345,7 @@ def get_results():
 
         table_data = f'{hed1}  {hed2}  {hed3}\n\n'
         for row in rows:
-            table_data += '|'.join(row) + '\n'
+            table_data += ' | '.join(row) + '\n'
 
         return table_data
     except NoSuchElementException as e:
@@ -342,7 +365,7 @@ def extract_fixtures_data():
                 try:
                     cell = driver.find_element(By.XPATH, f'//*[@id="fixtures-list"]/div/div/table/tbody/tr[{i}]/td[{j}]/div/div/a').text
                 except:
-                    cell = '::::::::'
+                    cell = ' vs '
                 row.append(cell)
             rows.append(row)
         table_data = f'{hed1.text}  {hed2.text}  {hed3.text}\n\n'
@@ -350,33 +373,74 @@ def extract_fixtures_data():
             table_data += ' | '.join(row) + '\n'
         return table_data
     except Exception as e:
-        return f"حدث خطأ أثناء استخراج بيانات الجولة القادمة: {str(e)}"
+        return f"حدث خطأ أثناء استخراج بيانات الجولة القادمة: "
 def data_analysis():
     try:
         driver.get('https://ar.onlinesoccermanager.com/DataAnalist')
         time.sleep(1)
-        driver.find_element(By.XPATH, '//*[@id="desktop-menu-navbar"]/li[6]/ul/li[2]/a').click()
-        time.sleep(2)
+       
+        wait = WebDriverWait(driver, 10)
         
-        click_analysis = driver.find_element(By.XPATH, '//*[@id="spy-team-list"]/div[1]/div/div/div/div[1]')
-        click_analysis.click()
+        # Locate the element using its class and the specific inner div structure
+        element = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, "//div[@class='row row-grid-fix-top']//div[contains(@class, 'panel center theme-panna-0 clickable')]")
+        ))
+        
+        # Click the element
+        element.click()
         time.sleep(2)
         xpathe = '//*[@id="countdowntimer-panel-container"]/div/div[2]/div[2]'
         if is_element_present(xpathe):
             result = driver.find_element(By.XPATH, xpathe).text
         
-        another_team = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[1]/div/div/div[2]/div[2]').text
-        trainer = driver.find_element(By.XPATH, '//*[@id="some-trainer-xpath"]').text
+        another_team = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[1]/div/div/div[2]/div[1]').text
+        trainer = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[1]/div/div/div[2]/div[2]').text
+        camp = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[7]/div/div[1]/div/div/span/span').text
+        match_plan = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[4]/div/div[1]/div/div/span/span').text
+        pass_cut = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[6]/div/div[1]/div/div/span/span').text
+        of_side_catcher = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[5]/div/div[1]/div/div/span/span').text
+        arina = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[8]/div/div[1]/div/div/span').text
+        driver.find_element(By.XPATH, '//*[@id="spy-col-header"]/ul/li[2]/a').click()
+        time.sleep(1)
         tashkila = driver.find_element(By.XPATH, '//*[@id="formation-content"]').text
-        match_plan = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[3]/div/div[1]/div/div/h6').text
-        pass_cut = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[6]/div/div[1]/div/div/h6').text
-        controlar = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[4]/div/div[1]/div/div/h6').text
-        of_side_catcher = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[5]/div/div[1]/div/div/h6').text
-        arina = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[8]/div/div[1]/div/div/h6').text
+        #taktic
+        driver.get('https://ar.onlinesoccermanager.com/Tactics')
+        time.sleep(2)
+        forwards = driver.find_element(By.XPATH, '//*[@id="carousel-tacticlineatt"]/div[2]/div/div/div[1]/h3').text
+        midfielders = driver.find_element(By.XPATH, '//*[@id="carousel-tacticlinemid"]/div[2]/div/div/div[1]/h3').text
+        defenders = driver.find_element(By.XPATH, '//*[@id="carousel-tacticlinedef"]/div[2]/div/div/div[1]/h3').text
+        pressing = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[1]/div/div/div/div[2]/div[2]/h5').text
+        pressing_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div[2]/input').text
+        style = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[2]/div/div/div/div[2]/div[2]/h5').text
+        style_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[2]/div/div/div/div[2]/div[3]/div/div[2]/input').text
+        tempo = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[3]/div/div/div/div[2]/div[2]/h5').text
+        tempo_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[3]/div/div/div/div[2]/div[3]/div/div[2]/input').text
+
         
-        result = f'{another_team}::::::{trainer}\n{tashkila}::::::...\n{match_plan}::::::...\n{pass_cut}::::::...\n{controlar}::::::...\n{of_side_catcher}::::::...\n{arina}::::::...'
-    except Exception as e:
-        result = f"حدث خطأ أثناء استخراج بيانات التحليل!"
+        result = f'الفريق الخصم: {another_team}\n\nمعسكر تدريب: {camp}\n\nالمدرب: {trainer}\n\nالتشكيلة: {tashkila}\n\nخطة اللعب: {match_plan}\n\nقطع الكرة: {pass_cut}\n\nمصيدة التسلل: {of_side_catcher}\n\nارض الملعب: {arina}\n\nالهجوم: {forwards}\n\nالوسط: {midfielders}\n\nالدفاع: {defenders}\n\nالضغط على الخصم: {pressing}({pressing_dig})\n\nالاسلوب: {style}({style_dig})\n\nايقاع اللعب: {tempo}({tempo_dig})'
+    except Exception as e :
+        try:
+            opn = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div/div[3]/button')
+            if opn:
+                opn.click()
+                result = f'الفريق الخصم: {another_team}\n\nمعسكر تدريب: {camp}\n\nالمدرب: {trainer}\n\nالتشكيلة: {tashkila}\n\nخطة اللعب: {match_plan}\n\nقطع الكرة: {pass_cut}\n\nمصيدة التسلل: {of_side_catcher}\n\nارض الملعب: {arina}\n\nالهجوم: {forwards}\n\nالوسط: {midfielders}\n\nالدفاع: {defenders}\n\nالضغط على الخصم: {pressing}({pressing_dig})\n\nالاسلوب: {style}({style_dig})\n\nايقاع اللعب: {tempo}({tempo_dig})'
+    
+        except:
+            pass
+        try:
+            err = driver.find_element(By.XPATH, '//*[@id="modal-dialog-sendspy"]/div[4]/div/div/div/div[3]/button')
+            if err:
+                err.click()
+                result = 'تم طلب تحليل البيانات انظر حتى تتم مدة الطلب'
+        except:
+            pass
+        try:
+            fe = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div[2]/div[2]').text
+            if fe:
+                result = f'الوقت المتبقي: {fe}'
+        except:
+            pass
+        result = f" حدث خطأ أثناء استخراج بيانات التحليل الرجاء التأكد من حالة محلل البيانات !"
     return result
 # تحقق من وجود العنصر
 def is_element_present(xpath):
@@ -395,12 +459,36 @@ def send_help(message):
 🚨 هذا البوت يتبع بوت المدرب الأفضل ويشرف عليه ساكو @sako7osm
 
 🛍 لشحن الكوينز و ملايين المدرب الأفضل ادخل المتجر واختار باقتك بعنايه : t.me/Dani5zzbot
+للتعليق على مشاكل البوت - مطور البوت: @hemonybot
 '''
         
         # Add more commands as needed
     )
     bot.send_message(message.chat.id, help_text)
+# Function to log out from OSM account
+def osm_logout():
+    try:
+        # Open the OSM website (replace with the actual URL)
+        
 
+        # Wait until the profile menu/icon is visible
+        wait = WebDriverWait(driver, 10)
+        
+        # Assuming there's a profile icon/menu to click on for logging out
+        profile_icon = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='profile-menu-icon']")))
+        profile_icon.click()
+
+        # Wait until the logout button/link is visible and clickable
+        logout_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'Log Out')]")))
+        logout_button.click()
+
+        print("Logged out successfully.")
+
+    except Exception as e:
+        print("Error logging out:", e)
+    finally:
+        # Close the browser after logging out
+        driver.quit()
 
 users = {}
 
