@@ -266,8 +266,9 @@ def show_main_menu(chat_id):
     btn6 = types.KeyboardButton('الجولة القادمة')
     btn7 = types.KeyboardButton('تسجيل خروج')
     btn8 = types.KeyboardButton('رجوع')
+    btn9 = types.KeyboardButton('مساعدة')
     # Adding buttons to markup
-    markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8)
+    markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9)
 
     # Sending the message with options
     bot.send_message(chat_id, "اختر أحد الخيارات:", reply_markup=markup)
@@ -325,6 +326,23 @@ def show_main_menu(chat_id):
                 time.sleep(2)
                 bot.send_message(chat_id, 'تمت العودة للقائمة الرئيسية اختر احد الخانات')
                 
+            elif message.text == 'مساعدة':
+                help_text = (
+                        '''لاستخدام هذا الروبوت، اتبع الخطوات التالية:
+
+                1. قم بتسجيل الدخول إلى حسابك باستخدام اسمك باللعبة وكلمة المرور.
+                2. بعد تسجيل الدخول، اختر فتحة فريقك لعرض نتائج التجسس.
+                3. يرجى التأكد من أنك قمت بإرسال محلل البيانات مسبقًا وقمت بفتح النتائج المرتجعة لرؤية معلومات إضافية.
+
+                🚨 هذا البوت يتبع بوت المدرب الأفضل ويشرف عليه ساكو @sako7osm
+
+                🛍 لشحن الكوينز و ملايين المدرب الأفضل ادخل المتجر واختار باقتك بعنايه : t.me/Dani5zzbot
+                للتعليق على مشاكل البوت - مطور البوت: @hemonybot
+                '''
+                        
+                        # Add more commands as needed
+                    )
+                bot.send_message(chat_id, help_text)
             else:
                 bot.send_message(message.chat.id, "يرجى اختيار خيار صحيح من القائمة.")
         except Exception as e:
@@ -427,14 +445,7 @@ def data_analysis():
         
         result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: {pressing}({pressing_dig})\n❏ الاسلوب: {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
     except Exception as e :
-        try:
-            opn = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div/div[3]/button')
-            if opn:
-                opn.click()
-                result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: () {pressing}({pressing_dig})\n❏ الاسلوب: () {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
-    
-        except:
-            pass
+        
         try:
             err = driver.find_element(By.XPATH, '//*[@id="modal-dialog-sendspy"]/div[4]/div/div/div/div[3]/button')
             if err:
@@ -446,6 +457,14 @@ def data_analysis():
             fe = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div[2]/div[2]').text
             if fe:
                 result = f'الوقت المتبقي: {fe}'
+        except:
+            pass
+        try:
+            opn = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div/div[3]/button')
+            if opn:
+                opn.click()
+                result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: () {pressing}({pressing_dig})\n❏ الاسلوب: () {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
+    
         except:
             pass
         result = f" حدث خطأ أثناء استخراج بيانات التحليل الرجاء التأكد من حالة محلل البيانات !"
@@ -626,6 +645,6 @@ def categorize_users(message):
     bot.send_message(ADMIN_ID, f"المستخدمون المتفاعلون:\n{active_list}")
     bot.send_message(ADMIN_ID, f"المستخدمون الخاملون:\n{inactive_list}")
 
-
+time.sleep(250)
 # تشغيل البوت
 bot.polling()
