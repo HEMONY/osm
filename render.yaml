@@ -1,0 +1,12 @@
+# Exported from Render on 2024-08-17T21:40:38Z
+services:
+- type: web
+  name: osm
+  runtime: python
+  repo: https://github.com/HEMONY/osm
+  plan: free
+  region: oregon
+  buildCommand: pip install -r requirements.txt
+  startCommand: python good_trainer.py
+  pullRequestPreviewsEnabled: false
+version: "1"
