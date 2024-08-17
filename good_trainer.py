@@ -34,6 +34,12 @@ languages = {
     'tr': 'Tukish'
 }
 chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--remote-debugging-port=9222")
+
 chrome_options.add_argument("--window-size=1920, 1080")
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--disable-notifications")
@@ -41,6 +47,7 @@ chrome_options.add_argument("--disable-advertisement")
 chrome_options.add_argument("--disable-popup-blocking")
     
 driver = webdriver.Chrome(options=chrome_options)
+time.sleep(3)
 # ... التحقق من الاشتراك في القناة
 def check_subscription(user_id):
     try:
@@ -111,7 +118,7 @@ def get_password(message):
         bot.send_message(chat_id, "فشل تسجيل الدخول. حاول مرة أخرى باستخدام الأمر /login.")
 
 def osm_login(username, password):
-    chrome_options = webdriver.ChromeOptions()
+    ''''chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--window-size=1920, 1080")
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-notifications")
@@ -119,7 +126,7 @@ def osm_login(username, password):
     chrome_options.add_argument("--disable-popup-blocking")
     
     global driver
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)'''
     
     driver.get("https://ar.onlinesoccermanager.com/Login")
     time.sleep(3)
