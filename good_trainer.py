@@ -425,7 +425,7 @@ def data_analysis():
         tempo_dig = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[3]/div[2]/div[3]/div/div/div/div[2]/div[3]/div/div[2]/input').get_attribute('value')
 
         
-        result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: () {pressing}({pressing_dig})\n❏ الاسلوب: () {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
+        result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: {pressing}({pressing_dig})\n❏ الاسلوب: {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
     except Exception as e :
         try:
             opn = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div/div[3]/button')
