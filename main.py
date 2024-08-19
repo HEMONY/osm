@@ -648,4 +648,4 @@ def categorize_users(message):
 
 #time.sleep(250)
 # تشغيل البوت
-bot.polling(non_stop=True)
+bot.polling()
