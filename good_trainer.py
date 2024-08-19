@@ -71,15 +71,15 @@ def send_welcome(message):
         send_subscription_message(message.chat.id)
         return
 
-    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    '''markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     for code, lang in languages.items():
-        markup.add(types.KeyboardButton(lang))
+        markup.add(types.KeyboardButton(lang))'''
     
-    bot.send_message(message.chat.id, "مرحباً! يرجى اختيار لغتك:", reply_markup=markup)
-    bot.register_next_step_handler(message, set_language)
+    bot.send_message(message.chat.id, "مرحباً! بك في بوت تحليل خصمك ومعرفة جميع تفاصيل خطته، بالاضافة الي اشعارك بنتائج المباريات اضغط على /login لتسجيل الدخول الى حسابك في OSM:" )#reply_markup=markup)
+    #bot.register_next_step_handler(message, set_language)
 
 
-def set_language(message):
+'''def set_language(message):
     chat_id = message.chat.id
     for code, lang in languages.items():
         if message.text == lang:
@@ -89,7 +89,7 @@ def set_language(message):
             show_main_menu(chat_id)
             return
     bot.send_message(chat_id, "يرجى اختيار لغة صالحة.")
-    bot.register_next_step_handler(message, set_language)
+    bot.register_next_step_handler(message, set_language)'''
 
 # دالة تسجيل الدخول
 @bot.message_handler(commands=['login'])
@@ -118,7 +118,7 @@ def get_password(message):
         bot.send_message(chat_id, "فشل تسجيل الدخول. حاول مرة أخرى باستخدام الأمر /login.")
 
 def osm_login(username, password):
-    ''''chrome_options = webdriver.ChromeOptions()
+    chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--window-size=1920, 1080")
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-notifications")
@@ -126,7 +126,7 @@ def osm_login(username, password):
     chrome_options.add_argument("--disable-popup-blocking")
     
     global driver
-    driver = webdriver.Chrome(options=chrome_options)'''
+    driver = webdriver.Chrome(options=chrome_options)
     
     driver.get("https://ar.onlinesoccermanager.com/Login")
     time.sleep(3)
@@ -163,8 +163,8 @@ def osm_login(username, password):
     login_button.click()
     time.sleep(5)
     driver.get('https://ar.onlinesoccermanager.com/Career?nextUrl=/Login')
-    global html_con
-    html_con = driver.find_element(By.CLASS_NAME, 'row-h-xs-24')
+    '''global html_con
+    html_con = driver.find_element(By.CLASS_NAME, 'row-h-xs-24')'''
 
     WebDriverWait(driver, 10).until(EC.url_contains('Career'))
     print(driver.current_url)
@@ -403,18 +403,19 @@ def data_analysis():
     try:
         driver.get('https://ar.onlinesoccermanager.com/DataAnalist')
         time.sleep(1)
+        driver.find_element(By.XPATH, '//*[@id="spy-team-list"]/div[1]/div/div').click()
        
-        wait = WebDriverWait(driver, 10)
+        '''wait = WebDriverWait(driver, 10)
         
         # Locate the element using its class and the specific inner div structure
         element = wait.until(EC.element_to_be_clickable(
             (By.XPATH, "//div[@class='row row-grid-fix-top']//div[contains(@class, 'panel center theme-panna-0 clickable')]")
-        ))
+        ))'''
         
         # Click the element
-        element.click()
+        #element.click()
         time.sleep(2)
-        xpathe = '//*[@id="countdowntimer-panel-container"]/div/div[2]/div[2]'
+        xpathe = "//div[@class='panel center theme-stepover-0 clickable']"
         if is_element_present(xpathe):
             result = driver.find_element(By.XPATH, xpathe).text
         
@@ -423,7 +424,7 @@ def data_analysis():
         camp = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[7]/div/div[1]/div/div/span/span').text
         match_plan = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[3]/div/div[1]/div/div/span/span').text
         pass_cut = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[6]/div/div[1]/div/div/span/span').text
-        controlar  = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[4]/div/div[1]/div/div/span/span')
+        controlar  = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[4]/div/div[1]/div/div/span/span').text
         of_side_catcher = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[5]/div/div[1]/div/div/span/span').text
         arina = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div/div[8]/div/div[1]/div/div/span').text
         driver.find_element(By.XPATH, '//*[@id="spy-col-header"]/ul/li[2]/a').click()
@@ -645,6 +646,6 @@ def categorize_users(message):
     bot.send_message(ADMIN_ID, f"المستخدمون المتفاعلون:\n{active_list}")
     bot.send_message(ADMIN_ID, f"المستخدمون الخاملون:\n{inactive_list}")
 
-time.sleep(250)
+#time.sleep(250)
 # تشغيل البوت
-bot.polling()
+bot.polling(non_stop=True)
