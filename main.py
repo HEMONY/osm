@@ -46,7 +46,7 @@ chrome_options.add_argument("--disable-notifications")
 chrome_options.add_argument("--disable-advertisement")
 chrome_options.add_argument("--disable-popup-blocking")
     
-driver = webdriver.Chrome(command_executor=server, options=chrome_options)
+driver = webdriver.Chrome(options=chrome_options)
 time.sleep(3)
 # ... التحقق من الاشتراك في القناة
 def check_subscription(user_id):
@@ -126,7 +126,7 @@ def osm_login(username, password):
     chrome_options.add_argument("--disable-popup-blocking")
     
     global driver
-    driver = webdriver.Chrome(command_executor=server, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
     
     driver.get("https://ar.onlinesoccermanager.com/Login")
     time.sleep(3)
