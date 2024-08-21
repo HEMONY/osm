@@ -173,7 +173,6 @@ def osm_login(username, password):
     
     
     if 'Career' in main_url:
-       
 
         return True
     else:
@@ -282,7 +281,6 @@ def show_main_menu(chat_id):
                 element = driver.find_element(By.XPATH, '//*[@id="body-content"]/div[2]/div[1]/div/div[1]/div/div[2]/div')
                 element.click()
                 time.sleep(2)
-                
                 bot.send_message(message.chat.id, data_analysis())
 
             elif message.text == button2:
@@ -449,26 +447,23 @@ def data_analysis():
         
         try:
             err = driver.find_element(By.XPATH, '//*[@id="modal-dialog-sendspy"]/div[4]/div/div/div/div[3]/button')
-            if err:
-                err.click()
-                result = 'تم طلب تحليل البيانات انظر حتى تتم مدة الطلب'
+            err.click()
+            result = 'تم طلب تحليل البيانات انظر حتى تتم مدة الطلب'
         except:
             pass
         try:
             fe = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div[2]/div[2]').text
-            if fe:
-                result = f'الوقت المتبقي: {fe}'
+            result = f'الوقت المتبقي: {fe}'
         except:
             pass
         try:
             opn = driver.find_element(By.XPATH, '//*[@id="countdowntimer-panel-container"]/div/div/div[3]/button')
-            if opn:
-                opn.click()
-                result = f'❏ الفريق الخصم: {another_team}\n❏ المدرب: {trainer}\n❏ التشكيلة: {tashkila}\nء--------------------------------------------------\n❏ أسلوب اللعب: {match_plan}\n❏ قطع الكرة:  {pass_cut}\n❏ مصيدة التسلل:  {of_side_catcher}\n❏ الرقابة: {controlar}\nء--------------------------------------------------\n❏ ارض الملعب:   {arina}\n❏ معسكر التدريب: {camp}\nء--------------------------------------------------\n❏ الهجوم:  {forwards}\n❏ الوسط:  {midfielders}\n❏ الدفاع:  {defenders}\nء--------------------------------------------------\n❏ الضغط على الخصم: () {pressing}({pressing_dig})\n❏ الاسلوب: () {style}({style_dig})\n❏ ايقاع اللعب:  {tempo}({tempo_dig})'
-    
+            opn.click()
+            result =  'تم فتح تحليل البيانات حاول الكشف مرة اخرى لظهور التحليل'
         except:
             pass
-        result = f" حدث خطأ أثناء استخراج بيانات التحليل الرجاء التأكد من حالة محلل البيانات !"
+        #result = f" حدث خطأ أثناء استخراج بيانات التحليل الرجاء التأكد من حالة محلل البيانات !"
+    return result
     return result
 # تحقق من وجود العنصر
 def is_element_present(xpath):
@@ -648,4 +643,4 @@ def categorize_users(message):
 
 #time.sleep(250)
 # تشغيل البوت
-bot.polling()
+bot.polling(non_stop=True)
